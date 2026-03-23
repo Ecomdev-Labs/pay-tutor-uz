@@ -39,7 +39,8 @@ class Database
             order_id TEXT PRIMARY KEY,
             chat_id INTEGER,
             amount INTEGER,
-            status TEXT
+            status TEXT,
+            product_type TEXT
         );
         SQL;
 

@@ -8,9 +8,9 @@ declare(strict_types=1);
  */
 
 // Определяем базовый URL для отправки вебхука об успешной оплате
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$webhookUrl = "$protocol://$host/payment_webhook.php";
+$host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'] ?? 'localhost';
+// Принудительно используем https, так как ngrok отдает наружу https
+$webhookUrl = "https://$host/payment_webhook.php";
 
 // Если форма отправлена (нажата кнопка "Оплатить" или "Отменить")
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -32,12 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-    // Для локальной разработки, чтобы не ругалось на самоподписанные SSL-сертификаты (например в ngrok/OSP):
+    // Для локальной разработки отключаем проверку SSL сертификатов
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    // Добавляем следование за редиректами, если они есть
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
     
     $webhookResponse = curl_exec($ch);
     $curlError = curl_error($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
     ?>
@@ -68,8 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div style="text-align: left; margin-top: 20px;">
                 <p><strong>Webhook отправлен на:</strong><br><small><?= htmlspecialchars($webhookUrl) ?></small></p>
-                <p><strong>Ответ от вашего сервера:</strong></p>
-                <pre><?= htmlspecialchars($webhookResponse ?: 'Пустой ответ или ошибка: ' . $curlError) ?></pre>
+                <p><strong>Ответ от вашего сервера (HTTP: <?= $httpCode ?>):</strong></p>
+                <pre><?= htmlspecialchars($webhookResponse ?: 'Пустой ответ или ошибка cURL: ' . $curlError) ?></pre>
             </div>
 
             <p>Теперь вы можете закрыть это окно и вернуться в Telegram-бота.</p>

@@ -45,10 +45,10 @@ if (isset($update['callback_query'])) {
     $data = $callbackQuery['data'];
     $callbackId = $callbackQuery['id'];
 
-    // Обязательно "гасим" состояние загрузки у кнопки
+    // Гасим кнопку загрузки
     $bot->answerCallbackQuery($callbackId);
 
-    // Получаем состояние пользователя из БД
+    // Получаем пользователя
     $stmt = $pdo->prepare("SELECT * FROM users WHERE chat_id = ?");
     $stmt->execute([$chatId]);
     $user = $stmt->fetch();
@@ -58,37 +58,92 @@ if (isset($update['callback_query'])) {
         exit;
     }
 
-    if ($data === 'course_individual' || $data === 'course_pair') {
-        $price = $data === 'course_individual' ? 200000 : 150000;
+    if ($data === 'menu_main') {
+        // Сброс состояния и возврат в главное меню
+        $stmt = $pdo->prepare("UPDATE users SET state = NULL, selected_course = NULL, course_price = NULL WHERE chat_id = ?");
+        $stmt->execute([$chatId]);
+
+        $keyboard = [
+            'inline_keyboard' => [
+                [['text' => '📚 Купить уроки', 'callback_data' => 'menu_buy_lessons']],
+                [['text' => '🔒 Доступ в закрытый канал', 'callback_data' => 'menu_channel']],
+                [['text' => '⚖️ Юридическая информация', 'callback_data' => 'menu_legal']],
+                [['text' => '🎧 Поддержка', 'callback_data' => 'menu_support']]
+            ]
+        ];
+        $bot->sendMessage($chatId, "<b>Главное меню:</b>", $keyboard);
+        exit;
+    }
+
+    if ($data === 'menu_buy_lessons') {
+        $keyboard = [
+            'inline_keyboard' => [
+                [['text' => 'Индивидуальные (200,000 UZS)', 'callback_data' => 'course_individual']],
+                [['text' => 'Парные (150,000 UZS)', 'callback_data' => 'course_pair']],
+                [['text' => 'Групповые (100,000 UZS)', 'callback_data' => 'course_group']],
+                [['text' => '🔙 Назад', 'callback_data' => 'menu_main']]
+            ]
+        ];
+        $bot->sendMessage($chatId, "Выберите формат уроков:", $keyboard);
+        exit;
+    }
+
+    if ($data === 'course_individual' || $data === 'course_pair' || $data === 'course_group') {
+        $prices = [
+            'course_individual' => 200000,
+            'course_pair' => 150000,
+            'course_group' => 100000 // Цена групповых из ТЗ/КП
+        ];
+        $price = $prices[$data];
         
-        // Обновляем состояние на "ожидание количества уроков"
         $stmt = $pdo->prepare("UPDATE users SET state = 'waiting_for_lessons_count', selected_course = ?, course_price = ? WHERE chat_id = ?");
         $stmt->execute([$data, $price, $chatId]);
 
-        $bot->sendMessage($chatId, "Введите количество уроков (цифрой, например: 5):");
+        $bot->sendMessage($chatId, "Введите количество уроков (только цифрой, например: <b>5</b>):");
+        exit;
         
-    } elseif ($data === 'course_channel') {
+    } elseif ($data === 'menu_channel') {
         $price = 300000;
-        $orderId = uniqid('order_'); // Генерируем уникальный ID заказа
+        $orderId = uniqid('order_');
         
-        // Создаем запись заказа в БД
-        $stmt = $pdo->prepare("INSERT INTO orders (order_id, chat_id, amount, status) VALUES (?, ?, ?, 'pending')");
+        // Создаем заказ, указывая тип продукта: 'channel'
+        $stmt = $pdo->prepare("INSERT INTO orders (order_id, chat_id, amount, status, product_type) VALUES (?, ?, ?, 'pending', 'channel')");
         $stmt->execute([$orderId, $chatId, $price]);
 
-        // Генерируем ссылку FreedomPay
-        $paymentLink = $freedomPay->generatePaymentLink($orderId, $price, "Доступ в канал");
+        $paymentLink = $freedomPay->generatePaymentLink($orderId, $price, "Доступ в закрытый канал");
 
-        // Отправляем кнопку "Оплатить"
         $keyboard = [
             'inline_keyboard' => [
-                [['text' => 'Оплатить 💳', 'url' => $paymentLink]]
+                [['text' => 'Оплатить 💳', 'url' => $paymentLink]],
+                [['text' => '🔙 Назад', 'callback_data' => 'menu_main']]
             ]
         ];
 
         $formattedPrice = number_format($price, 0, '.', ' ');
-        $bot->sendMessage($chatId, "Сумма к оплате: {$formattedPrice} UZS", $keyboard);
+        $bot->sendMessage($chatId, "Сумма к оплате за доступ в закрытый канал: <b>{$formattedPrice} UZS</b>", $keyboard);
+        exit;
+
+    } elseif ($data === 'menu_legal') {
+        // Требование FreedomPay (PayBox)
+        $legalText = "<b>Юридическая информация</b>\n\nИП / ООО «Ваше Название»\nИНН: 123456789\nОГРН/ОГРНИП: 1234567890123\n\n<a href='https://example.com/offer.pdf'>Публичная оферта</a>\n<a href='https://example.com/privacy.pdf'>Политика конфиденциальности</a>";
+        
+        $keyboard = [
+            'inline_keyboard' => [
+                [['text' => '🔙 Назад', 'callback_data' => 'menu_main']]
+            ]
+        ];
+        $bot->sendMessage($chatId, $legalText, $keyboard);
+        exit;
+
+    } elseif ($data === 'menu_support') {
+        $keyboard = [
+            'inline_keyboard' => [
+                [['text' => '🔙 Назад', 'callback_data' => 'menu_main']]
+            ]
+        ];
+        $bot->sendMessage($chatId, "Служба поддержки ответит на все ваши вопросы в рабочее время.\n\nПишите сюда: @SupportUsername", $keyboard);
+        exit;
     }
-    exit;
 }
 
 // ---------------------------------------------------------
@@ -100,71 +155,69 @@ if (isset($update['message'])) {
     $text = trim($message['text'] ?? '');
     $username = $message['chat']['username'] ?? '';
 
-    // Получаем или создаем пользователя
     $stmt = $pdo->prepare("SELECT * FROM users WHERE chat_id = ?");
     $stmt->execute([$chatId]);
     $user = $stmt->fetch();
 
     if (!$user) {
-        // Добавляем пользователя, если он пишет впервые
         $stmt = $pdo->prepare("INSERT INTO users (chat_id, username, state) VALUES (?, ?, NULL)");
         $stmt->execute([$chatId, $username]);
         $user = ['chat_id' => $chatId, 'state' => null, 'selected_course' => null, 'course_price' => null];
     }
 
-    // Команда /start
     if ($text === '/start') {
-        // Сброс состояния
         $stmt = $pdo->prepare("UPDATE users SET state = NULL, selected_course = NULL, course_price = NULL WHERE chat_id = ?");
         $stmt->execute([$chatId]);
 
         $keyboard = [
             'inline_keyboard' => [
-                [['text' => 'Индивидуальные (200,000 UZS)', 'callback_data' => 'course_individual']],
-                [['text' => 'Парные (150,000 UZS)', 'callback_data' => 'course_pair']],
-                [['text' => 'Доступ в канал (300,000 UZS)', 'callback_data' => 'course_channel']]
+                [['text' => '📚 Купить уроки', 'callback_data' => 'menu_buy_lessons']],
+                [['text' => '🔒 Доступ в закрытый канал', 'callback_data' => 'menu_channel']],
+                [['text' => '⚖️ Юридическая информация', 'callback_data' => 'menu_legal']],
+                [['text' => '🎧 Поддержка', 'callback_data' => 'menu_support']]
             ]
         ];
 
-        $bot->sendMessage($chatId, "Добро пожаловать в бота курсов немецкого языка!\nПожалуйста, выберите интересующий вас формат:", $keyboard);
+        // По ТЗ тут должно быть приветственное видео/фото, пока отправляем просто текст с красивым оформлением
+        $bot->sendMessage($chatId, "Добро пожаловать в бота курсов немецкого языка Анжелики Лепкиной! 🇩🇪\n\nВыберите интересующий вас пункт меню ниже:", $keyboard);
         exit;
     }
 
-    // Обработка состояния "ожидание количества уроков"
     if ($user['state'] === 'waiting_for_lessons_count') {
-        // Проверяем, ввел ли пользователь число больше 0
         if (is_numeric($text) && (int)$text > 0) {
             $lessonsCount = (int)$text;
             $coursePrice = (int)$user['course_price'];
             $totalPrice = $lessonsCount * $coursePrice;
             $orderId = uniqid('order_');
 
-            // Сброс состояния, так как мы получили нужные данные
             $stmt = $pdo->prepare("UPDATE users SET state = NULL WHERE chat_id = ?");
             $stmt->execute([$chatId]);
 
-            // Сохраняем заказ в статусе pending (в ожидании)
-            $stmt = $pdo->prepare("INSERT INTO orders (order_id, chat_id, amount, status) VALUES (?, ?, ?, 'pending')");
+            // Сохраняем заказ, указывая тип: 'lessons'
+            $stmt = $pdo->prepare("INSERT INTO orders (order_id, chat_id, amount, status, product_type) VALUES (?, ?, ?, 'pending', 'lessons')");
             $stmt->execute([$orderId, $chatId, $totalPrice]);
 
-            // Определение названия для описания платежа
-            $courseName = $user['selected_course'] === 'course_individual' ? 'Индивидуальные уроки' : 'Парные уроки';
+            $courseNames = [
+                'course_individual' => 'Индивидуальные уроки',
+                'course_pair' => 'Парные уроки',
+                'course_group' => 'Групповые уроки'
+            ];
+            $courseName = $courseNames[$user['selected_course']] ?? 'Уроки';
             $paymentDescription = "$courseName ($lessonsCount шт.)";
             
-            // Генерация платежной ссылки
             $paymentLink = $freedomPay->generatePaymentLink($orderId, $totalPrice, $paymentDescription);
 
             $keyboard = [
                 'inline_keyboard' => [
-                    [['text' => 'Оплатить 💳', 'url' => $paymentLink]]
+                    [['text' => 'Оплатить 💳', 'url' => $paymentLink]],
+                    [['text' => '🔙 В главное меню', 'callback_data' => 'menu_main']]
                 ]
             ];
 
             $formattedPrice = number_format($totalPrice, 0, '.', ' ');
-            $bot->sendMessage($chatId, "Вы выбрали $courseName. Количество уроков: $lessonsCount\nСумма к оплате: {$formattedPrice} UZS", $keyboard);
+            $bot->sendMessage($chatId, "Вы выбрали <b>$courseName</b>.\nКоличество уроков: $lessonsCount\nСумма к оплате: <b>{$formattedPrice} UZS</b>", $keyboard);
         } else {
-            // Если ввели не число
-            $bot->sendMessage($chatId, "Пожалуйста, введите корректное число уроков (например, 5):");
+            $bot->sendMessage($chatId, "⚠️ Пожалуйста, введите корректное число уроков (например, <b>5</b>):");
         }
         exit;
     }

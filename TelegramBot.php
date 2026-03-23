@@ -46,6 +46,23 @@ class TelegramBot
     }
 
     /**
+     * Создание одноразовой пригласительной ссылки в чат (канал)
+     */
+    public function createChatInviteLink($chatId, string $name = '', int $memberLimit = 1)
+    {
+        $data = [
+            'chat_id' => $chatId,
+            'member_limit' => $memberLimit,
+        ];
+
+        if ($name !== '') {
+            $data['name'] = $name;
+        }
+
+        return $this->request('createChatInviteLink', $data);
+    }
+
+    /**
      * Внутренний метод для отправки curl-запросов к Telegram API
      */
     private function request(string $method, array $data)
