@@ -8,12 +8,12 @@ require_once __DIR__ . '/TelegramBot.php';
 require_once __DIR__ . '/FreedomPay.php';
 
 // Конфигурация
-$botToken = '8713487564:AAHmAy0C0niI84oDGysjlkmTRn_CHv7xkZ8'; // Замените на токен из BotFather
+$botToken = 'YOUR_BOT_TOKEN_HERE'; // Замените на токен из BotFather
 $merchantId = 'TEST_MERCHANT'; // Тот же merchant ID
 $secretKey = 'test_secret'; // Тот же секретный ключ FreedomPay
 
-$adminChatId = 6164426603; // ID владельца бота (ваш ID для уведомлений)
-$channelId = '-1003769952868'; // Замените на реальный ID закрытого канала
+$adminChatId = 123456789; // ID владельца бота (ваш ID для уведомлений)
+$channelId = '-1001234567890'; // Замените на реальный ID закрытого канала
 
 // Инициализация сервисов
 $bot = new TelegramBot($botToken);
@@ -62,7 +62,7 @@ if ($pgResult === '1' && $orderId) {
                 }
             } else {
                 // Если купили уроки
-                $msg = "✅ <b>Оплата успешно получена! Спасибо.</b>\n\nНомер вашего заказа: <b>{$orderId}</b>\n\nДля составления расписания занятий, пожалуйста, напишите нашему преподавателю: @AngelikaLepkina.\n<i>(Обязательно сообщите ей номер вашего заказа)</i>";
+                $msg = "✅ <b>Оплата успешно получена! Спасибо.</b>\n\nНомер вашего заказа: <b>{$orderId}</b>\n\nДля составления расписания занятий, пожалуйста, напишите нашему преподавателю: @TeacherUsername.\n<i>(Обязательно сообщите ей/ему номер вашего заказа)</i>";
                 $bot->sendMessage($chatId, $msg);
             }
 

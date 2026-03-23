@@ -8,7 +8,7 @@ require_once __DIR__ . '/TelegramBot.php';
 require_once __DIR__ . '/FreedomPay.php';
 
 // Конфигурация
-$botToken = '8713487564:AAHmAy0C0niI84oDGysjlkmTRn_CHv7xkZ8'; // Замените на токен из BotFather
+$botToken = 'YOUR_BOT_TOKEN_HERE'; // Замените на токен из BotFather
 $merchantId = 'TEST_MERCHANT'; // Замените на реальный merchant ID
 $secretKey = 'test_secret'; // Замените на реальный секретный ключ FreedomPay
 
@@ -178,8 +178,8 @@ if (isset($update['message'])) {
             ]
         ];
 
-        // По ТЗ тут должно быть приветственное видео/фото, пока отправляем просто текст с красивым оформлением
-        $bot->sendMessage($chatId, "Добро пожаловать в бота курсов немецкого языка Анжелики Лепкиной! 🇩🇪\n\nВыберите интересующий вас пункт меню ниже:", $keyboard);
+        // Приветственное сообщение
+        $bot->sendMessage($chatId, "Добро пожаловать в бота нашей онлайн-школы! 🎓\n\nВыберите интересующий вас пункт меню ниже:", $keyboard);
         exit;
     }
 
