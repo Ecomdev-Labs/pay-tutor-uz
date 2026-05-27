@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace App;
+
 class TelegramBot
 {
     private string $token;
@@ -74,7 +76,6 @@ class TelegramBot
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Раскомментировать, если есть проблемы с SSL сертификатами
 
         $response = curl_exec($ch);
         $curlError = curl_error($ch);

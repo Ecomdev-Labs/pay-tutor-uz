@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-// Подключение зависимостей
-require_once __DIR__ . '/database.php';
-require_once __DIR__ . '/TelegramBot.php';
-require_once __DIR__ . '/FreedomPay.php';
+// Подключение зависимостей (composer autoload или fallback)
+require_once __DIR__ . '/../src/bootstrap.php';
+
+use App\Database;
+use App\TelegramBot;
+use App\FreedomPay;
 
 // Конфигурация
 $botToken = 'YOUR_BOT_TOKEN_HERE'; // Замените на токен из BotFather
@@ -35,6 +37,9 @@ if (!$update) {
 
 // Логируем входящий запрос для дебага
 file_put_contents(__DIR__ . '/bot_debug.log', date('Y-m-d H:i:s') . " - Incoming update: " . json_encode($update, JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
+
+// Этот endpoint — технический webhook, не должен индексироваться поисковиками
+header('X-Robots-Tag: noindex, nofollow');
 
 // ---------------------------------------------------------
 // 1. Обработка Callback-запросов (Нажатия на инлайн-кнопки)

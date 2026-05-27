@@ -1,0 +1,13 @@
+{
+  "name": "atmos-bot/project",
+  "description": "Telegram bot + demo site",
+  "type": "project",
+  "require": {
+    "php": ">=7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  }
+}

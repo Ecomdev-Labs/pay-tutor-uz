@@ -7,10 +7,16 @@ declare(strict_types=1);
  * и отправляет callback-запрос (webhook) на ваш payment_webhook.php, как это сделала бы реальная платежная система.
  */
 
+// Подключение зависимостей (composer autoload или fallback) — mock не использует классы, но подключаем для консистенции
+require_once __DIR__ . '/../src/bootstrap.php';
+
 // Определяем базовый URL для отправки вебхука об успешной оплате
 $host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'] ?? 'localhost';
 // Принудительно используем https, так как ngrok отдает наружу https
 $webhookUrl = "https://$host/payment_webhook.php";
+
+// Запретить индексирование тестовой страницы
+header('X-Robots-Tag: noindex, nofollow');
 
 // Если форма отправлена (нажата кнопка "Оплатить" или "Отменить")
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -28,20 +34,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
 
     // Отправляем POST-запрос (curl) на наш скрипт-обработчик (payment_webhook.php)
-    $ch = curl_init($webhookUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-    // Для локальной разработки отключаем проверку SSL сертификатов
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    // Добавляем следование за редиректами, если они есть
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    
-    $webhookResponse = curl_exec($ch);
-    $curlError = curl_error($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    // Если мы на встроенном PHP-сервере (cli-server), он однопоточный и
+    // внутренний HTTP-запрос к тому же серверу заблокирует выполнение.
+    // В этом случае симулируем webhook, делая прямой include обработчика.
+    if (PHP_SAPI === 'cli-server') {
+        $_POST['pg_order_id'] = $orderId;
+        $_POST['pg_amount'] = $amount;
+        $_POST['pg_result'] = ($action === 'pay') ? '1' : '0';
+        $_POST['pg_sig'] = 'simulated_signature_mock';
+
+        ob_start();
+        require __DIR__ . '/payment_webhook.php';
+        $webhookResponse = ob_get_clean();
+        $curlError = '';
+        $httpCode = 200;
+    } else {
+        $ch = curl_init($webhookUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        // Для локальной разработки отключаем проверку SSL сертификатов
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        // Добавляем следование за редиректами, если они есть
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        
+        $webhookResponse = curl_exec($ch);
+        $curlError = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+    }
 
     ?>
     <!DOCTYPE html>

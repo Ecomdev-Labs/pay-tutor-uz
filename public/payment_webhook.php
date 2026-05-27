@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-// Подключение зависимостей
-require_once __DIR__ . '/database.php';
-require_once __DIR__ . '/TelegramBot.php';
-require_once __DIR__ . '/FreedomPay.php';
+
+// Подключение зависимостей (composer autoload или fallback)
+require_once __DIR__ . '/../src/bootstrap.php';
+use App\Database;
+use App\TelegramBot;
+use App\FreedomPay;
 
 // Конфигурация
 $botToken = 'YOUR_BOT_TOKEN_HERE'; // Замените на токен из BotFather
@@ -21,8 +23,6 @@ $db = new Database();
 $pdo = $db->getPdo();
 $freedomPay = new FreedomPay($merchantId, $secretKey);
 
-// Данные, приходящие от FreedomPay
-// FreedomPay обычно отправляет POST запросы с форматированными данными
 $pgResult = $_POST['pg_result'] ?? null;
 $orderId = $_POST['pg_order_id'] ?? null;
 // $pgSig = $_POST['pg_sig'] ?? null; // В реальном проекте необходимо проверить подпись!
