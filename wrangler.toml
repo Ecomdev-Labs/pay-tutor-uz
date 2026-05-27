@@ -1,0 +1,6 @@
+name = "pay-tutor-static"
+compatibility_date = "2026-05-27"
+
+[site]
+bucket = "public/site_static"
+include = ["**/*"]
