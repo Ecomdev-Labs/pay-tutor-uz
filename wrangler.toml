@@ -1,6 +1,9 @@
 name = "pay-tutor-static"
 compatibility_date = "2026-05-27"
 
+# Wrangler requires a top-level entry when using workers-site
+main = "workers-site/index.js"
+
 [site]
 bucket = "public/site_static"
 include = ["**/*"]
