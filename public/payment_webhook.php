@@ -23,6 +23,9 @@ $db = new Database();
 $pdo = $db->getPdo();
 $freedomPay = new FreedomPay($merchantId, $secretKey);
 
+// Технический webhook — не индексировать
+header('X-Robots-Tag: noindex, nofollow');
+
 $pgResult = $_POST['pg_result'] ?? null;
 $orderId = $_POST['pg_order_id'] ?? null;
 // $pgSig = $_POST['pg_sig'] ?? null; // В реальном проекте необходимо проверить подпись!

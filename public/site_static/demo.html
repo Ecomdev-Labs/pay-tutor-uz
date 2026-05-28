@@ -3,22 +3,48 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Демо — PayTutor</title>
-    <meta name="description" content="Демонстрация mock‑платежа и workflow бота PayTutor">
-    <link rel="stylesheet" href="/styles.css">
+    <title>Демо mock‑потока оплаты — PayTutor</title>
+    <meta name="description" content="Безопасная демонстрация mock‑оплаты PayTutor без реальных токенов и webhook.">
     <meta name="robots" content="noindex,follow">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 <header>
+    <p class="header-badge">Demo · noindex</p>
     <h1>Демо: mock‑поток оплаты</h1>
-    <nav><a href="/">Главная</a></nav>
+    <p class="header-lead">Безопасный показ сценария без реальных карт, токенов и webhook URL.</p>
+    <nav><a href="/">Главная</a><a href="/mock-pay.html?pg_order_id=demo_static&amp;pg_amount=100000&amp;pg_description=Demo">Mock‑оплата</a></nav>
 </header>
 <main>
-    <p>Ниже ссылка откроет симулятор платежа (локальный mock).</p>
-    <a class="btn btn-secondary" href="/mock_freedompay.php?pg_order_id=demo_static&pg_amount=10000&pg_description=Demo" target="_blank">Симулировать оплату</a>
+    <section>
+        <h2>Как работает demo‑стенд</h2>
+        <p>Согласно чеклисту публикации: технические endpoint не индексируются, для показа используется mock без реальных платёжных секретов.</p>
+        <ol class="funnel-steps compact">
+            <li><span class="step-num">1</span><div><strong>Клиент в боте</strong><p>Выбирает продукт и получает ссылку на оплату.</p></div></li>
+            <li><span class="step-num">2</span><div><strong>Mock‑страница</strong><p>Открывается симулятор (эта страница) вместо реальной кассы.</p></div></li>
+            <li><span class="step-num">3</span><div><strong>Имитация callback</strong><p>В demo webhook не вызывается — показывается результат «успех» или «отмена».</p></div></li>
+            <li><span class="step-num">4</span><div><strong>Production</strong><p>Реальный webhook обновляет БД и бот выдаёт продукт клиенту.</p></div></li>
+        </ol>
+    </section>
+
+    <section>
+        <h2>Попробовать mock‑оплату</h2>
+        <p>Нажмите кнопку — откроется тестовая страница оплаты. Можно имитировать успех или отмену.</p>
+        <a class="btn btn-secondary" href="/mock-pay.html?pg_order_id=demo_static&amp;pg_amount=300000&amp;pg_description=Доступ+в+канал" target="_blank" rel="noopener">Симулировать оплату канала (300 000 UZS)</a>
+        <a class="btn" href="/mock-pay.html?pg_order_id=demo_lessons&amp;pg_amount=1000000&amp;pg_description=5+групповых+уроков" target="_blank" rel="noopener">Симулировать оплату уроков (1 000 000 UZS)</a>
+    </section>
+
+    <section class="notice">
+        <h3>Что не публикуется</h3>
+        <ul>
+            <li>Токены бота и merchant secret</li>
+            <li>URL webhook и payment callback</li>
+            <li>Реальные chat_id и данные клиентов</li>
+        </ul>
+    </section>
 </main>
 <footer>
-    <p>© 2026 PayTutor — Demo</p>
+    <p>© 2026 PayTutor Demo · <a href="/">Вернуться к кейсу</a></p>
 </footer>
 </body>
 </html>

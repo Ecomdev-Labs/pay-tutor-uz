@@ -3,53 +3,226 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Кейс: Telegram bot для онлайн-школ — PayTutor</title>
-    <meta name="description" content="Кейс PayTutor: бот для приёма оплат, выдачи доступа и управления воронке продаж. Демонстрация mock-платежа и рекомендации по публикации.">
-    <link rel="stylesheet" href="/styles.css">
+    <title>Telegram-бот для онлайн-школы — приём оплаты и выдача доступа | PayTutor</title>
+    <meta name="description" content="Кейс PayTutor от Ecomdev: Telegram-бот для онлайн-школы — воронка продаж, приём оплаты через FreedomPay, автоматическая выдача уроков и доступа в закрытый канал.">
+    <meta name="keywords" content="Telegram bot для онлайн-школы, бот для приема оплаты, бот для выдачи цифрового продукта, автоматизация продаж уроков, FreedomPay, PayTutor">
+    <meta name="author" content="Ecomdev">
     <meta name="robots" content="index,follow">
-    <meta name="author" content="PayTutor">
-    <meta property="og:title" content="Кейс: Telegram bot для онлайн-школ — PayTutor">
-    <meta property="og:description" content="Кейс PayTutor: бот для приёма оплат, выдачи доступа и управления воронке продаж.">
+    <link rel="canonical" href="https://pay-tutor.ecomdev.uz/">
+    <link rel="stylesheet" href="/styles.css">
+    <meta property="og:title" content="Telegram-бот для онлайн-школы — кейс PayTutor">
+    <meta property="og:description" content="Автоматизация воронки продаж, оплаты и выдачи цифрового продукта в Telegram. Кейс Ecomdev.">
     <meta property="og:type" content="website">
-    
+    <meta property="og:url" content="https://pay-tutor.ecomdev.uz/">
+    <meta property="og:locale" content="ru_RU">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Telegram-бот для автоматизации продаж онлайн-школы",
+        "provider": {
+            "@type": "Organization",
+            "name": "Ecomdev",
+            "url": "https://ecomdev.uz"
+        },
+        "description": "Кастомный Telegram-бот: воронка продаж, интеграция с платёжным шлюзом, автоматическая выдача доступа и уведомления администратору.",
+        "areaServed": "UZ",
+        "serviceType": "Telegram bot development"
+    }
+    </script>
 </head>
 <body>
 <header>
-    <h1>Telegram‑бот для автоматизации продаж — кейс PayTutor</h1>
-    <nav><a href="/">Главная</a><a href="/demo.html">Демо</a></nav>
+    <p class="header-badge">Кейс · Ecomdev</p>
+    <h1>Telegram‑бот для онлайн‑школы: приём оплаты и выдача цифрового продукта</h1>
+    <p class="header-lead">Автоматизация воронки продаж в Telegram — от выбора тарифа до оплаты и мгновенной выдачи доступа клиенту.</p>
+    <nav>
+        <a href="/">Главная</a>
+        <a href="#problem">Задача</a>
+        <a href="#funnel">Воронка</a>
+        <a href="#screenshots">Интерфейс</a>
+        <a href="/demo.html">Демо</a>
+        <a href="#cta" class="nav-cta">Заказать</a>
+    </nav>
 </header>
+
 <main>
     <section class="hero">
+        <span class="badge">PayTutor · MVP</span>
         <h2>Коротко о проекте</h2>
-        <p>Автоматизация процесса продажи уроков через Telegram: выбор формата, расчёт цены, оплата и автоматическая выдача доступа.</p>
+        <p>PayTutor — демонстрационный кейс кастомной automation-услуги для онлайн‑школ, репетиторов и авторов закрытых сообществ. Бот ведёт клиента по воронке, рассчитывает стоимость, принимает оплату через платёжный шлюз и автоматически выдаёт цифровой продукт: номер заказа, инструкции или одноразовую ссылку в закрытый канал.</p>
+        <p class="hero-note">Технические webhook и платёжные endpoint не индексируются и не публикуются как открытый продукт — публично доступен только этот кейс и безопасный mock‑демо.</p>
     </section>
 
-    <section>
-        <h3>Публикация и SEO</h3>
-        <p>Страница подготовлена согласно рекомендациям в техзадании: problem→solution, стек, интеграции и CTA.</p>
+    <section id="problem" class="split-block">
+        <div class="split-card problem">
+            <h2>Problem — задача</h2>
+            <p>Онлайн‑школам и репетиторам нужно продавать уроки и доступ в Telegram без ручной работы на каждом шаге:</p>
+            <ul>
+                <li>менеджер вручную принимает заявки и считает стоимость;</li>
+                <li>оплата происходит вне автоматизированного сценария;</li>
+                <li>после оплаты доступ выдаётся вручную — риск ошибок и задержек;</li>
+                <li>нет единой воронки «выбор → оплата → выдача».</li>
+            </ul>
+        </div>
+        <div class="split-card solution">
+            <h2>Solution — решение</h2>
+            <p>Telegram‑бот с state machine в базе данных, интеграцией FreedomPay и webhook‑обработчиком:</p>
+            <ul>
+                <li>контекстный диалог с inline‑кнопками и запоминанием состояния;</li>
+                <li>динамический расчёт суммы по тарифу и количеству уроков;</li>
+                <li>безопасная оплата через платёжный шлюз с MD5‑подписью;</li>
+                <li>автовыдача: invite‑ссылка в канал или инструкции преподавателю;</li>
+                <li>мгновенное уведомление администратору о каждой продаже.</li>
+            </ul>
+        </div>
     </section>
 
-    <section>
-        <h3>Публикации</h3>
-        <p>Демо‑публикация доступна отдельно — пример содержимого и SEO.</p>
-        <ul>
-            <li><a href="/post.html">Telegram bot для онлайн‑школы — кейс</a></li>
+    <section id="funnel">
+        <h2>Схема воронки и автоматизации</h2>
+        <p class="section-lead">Пользователь проходит путь внутри Telegram; backend обрабатывает заказ и webhook от платёжной системы.</p>
+        <ol class="funnel-steps">
+            <li>
+                <span class="step-num">1</span>
+                <div>
+                    <strong>/start → главное меню</strong>
+                    <p>Купить уроки, доступ в канал, юридическая информация, поддержка.</p>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">2</span>
+                <div>
+                    <strong>Выбор продукта</strong>
+                    <p>Индивидуальные / парные / групповые уроки или подписка на закрытый канал.</p>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">3</span>
+                <div>
+                    <strong>Расчёт и заказ</strong>
+                    <p>Бот запрашивает количество уроков, умножает на тариф, создаёт заказ в БД (<code>pending</code>).</p>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">4</span>
+                <div>
+                    <strong>Оплата</strong>
+                    <p>Клиент переходит по ссылке FreedomPay; провайдер отправляет callback на webhook.</p>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">5</span>
+                <div>
+                    <strong>Fulfillment — выдача</strong>
+                    <p>Уроки → номер заказа и контакт преподавателя. Канал → одноразовая invite‑ссылка через Telegram API.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section id="payment-flow">
+        <h2>Сценарий оплаты и выдачи цифрового продукта</h2>
+        <div class="flow-grid">
+            <div class="flow-item">
+                <h3>Уроки</h3>
+                <p>Клиент выбирает формат → вводит число уроков → оплачивает сумму → получает номер заказа и инструкцию связаться с преподавателем.</p>
+            </div>
+            <div class="flow-item">
+                <h3>Закрытый канал</h3>
+                <p>Фиксированная цена → оплата → бот вызывает <code>createChatInviteLink</code> с <code>member_limit: 1</code> и отправляет персональную ссылку.</p>
+            </div>
+            <div class="flow-item">
+                <h3>Администратор</h3>
+                <p>После успешного webhook заказ помечается <code>paid</code> (идемпотентно); владелец получает сводку: сумма, тип продукта, chat_id клиента.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="screenshots">
+        <h2>Интерфейс бота (безопасные mock‑скриншоты)</h2>
+        <p class="section-lead">Демонстрационные макеты интерфейса без реальных данных, токенов и webhook URL.</p>
+        <div class="screenshots-grid">
+            <figure class="screenshot">
+                <div class="tg-mock">
+                    <div class="tg-header">PayTutor Bot</div>
+                    <div class="tg-msg bot">Добро пожаловать! 🎓<br>Выберите пункт меню:</div>
+                    <div class="tg-btn">📚 Купить уроки</div>
+                    <div class="tg-btn">🔒 Доступ в закрытый канал</div>
+                    <div class="tg-btn">⚖️ Юридическая информация</div>
+                </div>
+                <figcaption>1. Главное меню</figcaption>
+            </figure>
+            <figure class="screenshot">
+                <div class="tg-mock">
+                    <div class="tg-header">PayTutor Bot</div>
+                    <div class="tg-msg bot">Выберите формат уроков:</div>
+                    <div class="tg-btn">Индивидуальные (200 000 UZS)</div>
+                    <div class="tg-btn">Парные (150 000 UZS)</div>
+                    <div class="tg-btn">Групповые (100 000 UZS)</div>
+                </div>
+                <figcaption>2. Выбор тарифа</figcaption>
+            </figure>
+            <figure class="screenshot">
+                <div class="tg-mock">
+                    <div class="tg-header">PayTutor Bot</div>
+                    <div class="tg-msg bot">Количество: <b>5</b><br>Сумма: <b>1 000 000 UZS</b></div>
+                    <div class="tg-btn pay">Оплатить 💳</div>
+                </div>
+                <figcaption>3. Расчёт и ссылка на оплату</figcaption>
+            </figure>
+            <figure class="screenshot">
+                <div class="tg-mock">
+                    <div class="tg-header">PayTutor Bot</div>
+                    <div class="tg-msg bot success">✅ Оплата прошла успешно!<br><br>Ваша одноразовая ссылка:<br><span class="tg-link">t.me/+abc…xyz</span></div>
+                </div>
+                <figcaption>4. Выдача доступа после оплаты</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section id="stack">
+        <h2>Стек и интеграции</h2>
+        <div class="tags">
+            <span class="tag">Telegram Bot API</span>
+            <span class="tag">FreedomPay / PayBox</span>
+            <span class="tag">PHP 7.4+</span>
+            <span class="tag">SQLite / PDO</span>
+            <span class="tag">Webhook</span>
+            <span class="tag">cURL</span>
+            <span class="tag">MD5 signature</span>
+            <span class="tag">State machine</span>
+        </div>
+        <ul class="stack-list">
+            <li><strong>Telegram Bot API</strong> — сообщения, inline‑клавиатуры, invite‑ссылки, уведомления админу.</li>
+            <li><strong>FreedomPay</strong> — генерация платёжной ссылки, приём callback, проверка подписи (в production).</li>
+            <li><strong>SQLite + PDO</strong> — пользователи, состояния диалога, заказы; поддержка MySQL через <code>DATABASE_DSN</code>.</li>
+            <li><strong>Mock‑стенд</strong> — локальный симулятор оплаты для демо без реальных карт и секретов.</li>
         </ul>
     </section>
 
-    <section>
-        <h3>Демо‑поток оплаты</h3>
-        <p>Демо открывает mock-страницу оплаты в новой вкладке.</p>
-        <a class="btn" href="/mock_freedompay.php?pg_order_id=demo_1&pg_amount=10000&pg_description=Demo" target="_blank">Симулировать оплату (демо)</a>
+    <section id="demo">
+        <h2>Демо mock‑потока оплаты</h2>
+        <p>Для публичного показа подготовлен безопасный demo‑стенд: mock‑страница оплаты без реальных токенов, webhook URL и платёжных секретов. Страница демо помечена <code>noindex</code>.</p>
+        <p>
+            <a class="btn" href="/demo.html">Открыть демо‑стенд</a>
+            <a class="btn btn-secondary" href="/mock-pay.html?pg_order_id=demo_public&amp;pg_amount=100000&amp;pg_description=Demo+уроки" target="_blank" rel="noopener">Симулировать оплату</a>
+        </p>
     </section>
-    
-    <section>
-        <h3>CTA</h3>
-        <p>Нужна помощь с интеграцией? Напишите в Telegram: @SupportUsername</p>
+
+    <section id="cta" class="cta-block">
+        <h2>Нужен похожий бот для вашей школы?</h2>
+        <p>Ecomdev разрабатывает кастомные Telegram‑решения: воронки продаж, интеграции с платёжными системами Узбекистана, автоматическая выдача цифровых продуктов.</p>
+        <p class="cta-keywords">Telegram bot для онлайн‑школы · бот для приёма оплаты · бот для выдачи цифрового продукта</p>
+        <p>
+            <a class="btn btn-lg" href="https://ecomdev.uz" target="_blank" rel="noopener">Заказать консультацию на Ecomdev</a>
+            <a class="btn btn-outline" href="https://t.me/EcomdevLabs" target="_blank" rel="noopener">Написать в Telegram</a>
+        </p>
     </section>
 </main>
+
 <footer>
-    <p>© 2026 PayTutor</p>
+    <p>© 2026 Ecomdev · Кейс PayTutor · <a href="/post.html">Полная статья кейса</a></p>
+    <p class="footer-meta">Технические endpoint (webhook, mock PHP) не индексируются.</p>
 </footer>
 </body>
 </html>

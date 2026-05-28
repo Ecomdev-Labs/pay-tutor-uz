@@ -3,31 +3,74 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Telegram bot для онлайн‑школы — кейс PayTutor</title>
-    <meta name="description" content="Кейс PayTutor: бот для приёма оплат, выдачи доступа и управления воронке продаж.">
-    <link rel="stylesheet" href="/styles.css">
+    <title>Telegram bot для онлайн‑школы — полный кейс PayTutor | Ecomdev</title>
+    <meta name="description" content="Развёрнутый кейс PayTutor: problem-solution, воронка продаж в Telegram, интеграция FreedomPay, автоматическая выдача цифрового продукта.">
+    <meta name="keywords" content="Telegram bot для онлайн-школы, бот для приема оплаты, бот для выдачи цифрового продукта">
     <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://pay-tutor.ecomdev.uz/post.html">
+    <link rel="stylesheet" href="/styles.css">
     <meta property="og:title" content="Telegram bot для онлайн‑школы — кейс PayTutor">
-    <meta property="og:description" content="Кейс PayTutor: бот для приёма оплат, выдачи доступа и управления воронке продаж.">
+    <meta property="og:description" content="Problem-solution, воронка, интеграции и автоматизация выдачи доступа.">
+    <meta property="og:type" content="article">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Telegram bot для онлайн-школы — кейс PayTutor",
+        "author": {"@type": "Organization", "name": "Ecomdev"},
+        "publisher": {"@type": "Organization", "name": "Ecomdev"},
+        "datePublished": "2026-05-28",
+        "description": "Кастомный Telegram-бот для автоматизации продаж уроков и выдачи доступа."
+    }
+    </script>
 </head>
 <body>
 <header>
-    <h1>Telegram bot для онлайн‑школы — кейс PayTutor</h1>
-    <nav><a href="/">Главная</a><a href="/demo.html">Демо</a></nav>
+    <p class="header-badge">Статья · Ecomdev</p>
+    <h1>Telegram bot для онлайн‑школы — развёрнутый кейс</h1>
+    <nav><a href="/">Главная</a><a href="/demo.html">Демо</a><a href="/#cta">Заказать</a></nav>
 </header>
 <main>
-    <p class="meta">Опубликовано: 2026-05-28</p>
+    <p class="meta">Опубликовано: 2026-05-28 · Кейс automation-услуги Ecomdev</p>
+
     <article>
-        <h2>Problem — задача</h2>
-        <p>Онлайн‑школам требуется автоматизация процесса продажи: подбор формата урока, расчёт стоимости, оплата и автоматическая выдача доступа или инструкции.</p>
-        <h2>Solution — решение</h2>
-        <p>Реализован Telegram‑бот, который ведёт воронку, формирует заказ, интегрируется с платёжным шлюзом и через webhook помечает заказ как оплаченный и выдаёт одноразовую ссылку или инструкции.</p>
-        <h2>Демо</h2>
-        <p>Доступен mock‑поток оплаты для безопасного тестирования без реальных карт.</p>
+        <h2>Problem — задача клиента</h2>
+        <p>Онлайн‑школам, репетиторам и авторам закрытых Telegram‑сообществ нужна автоматизация полного цикла продажи:</p>
+        <ul>
+            <li>подбор формата занятий (индивидуальные, парные, групповые);</li>
+            <li>расчёт стоимости в зависимости от количества уроков;</li>
+            <li>приём оплаты через локальный платёжный шлюз (FreedomPay / PayBox);</li>
+            <li>автоматическая выдача цифрового продукта после подтверждения оплаты.</li>
+        </ul>
+        <p>Без автоматизации каждый заказ требует ручного участия менеджера — это замедляет продажи и создаёт ошибки при выдаче доступа.</p>
+
+        <h2>Solution — техническое решение</h2>
+        <p>Реализован Telegram‑бот на PHP с хранением состояния диалога в SQLite. Бот использует inline‑клавиатуру и state machine: например, после выбора тарифа переходит в состояние <code>waiting_for_lessons_count</code> и принимает только корректный числовой ввод.</p>
+        <p>Заказы сохраняются в таблице <code>orders</code> со статусом <code>pending</code>. Платёжная ссылка генерируется классом FreedomPay с MD5‑подписью. Webhook‑обработчик принимает callback, атомарно обновляет статус на <code>paid</code> и инициирует fulfillment.</p>
+
+        <h2>Воронка продаж</h2>
+        <p>Команда <code>/start</code> сбрасывает состояние и показывает главное меню. Пользователь выбирает «Купить уроки» или «Доступ в закрытый канал». Для уроков бот запрашивает количество, умножает на цену тарифа и формирует заказ. Для канала — фиксированная сумма 300 000 UZS.</p>
+        <p>После оплаты webhook различает <code>product_type</code>: для <code>lessons</code> отправляется номер заказа и контакт преподавателя; для <code>channel</code> — одноразовая invite‑ссылка через <code>createChatInviteLink</code>.</p>
+
+        <h2>Интеграции</h2>
+        <ul>
+            <li><strong>Telegram Bot API</strong> — sendMessage, answerCallbackQuery, createChatInviteLink.</li>
+            <li><strong>FreedomPay</strong> — init_payment, pg_sig, Result URL webhook.</li>
+            <li><strong>SQLite / PDO</strong> — users, orders; миграция на MySQL через DATABASE_DSN.</li>
+            <li><strong>Mock‑стенд</strong> — симулятор оплаты для demo без реальных секретов.</li>
+        </ul>
+
+        <h2>Модель публикации</h2>
+        <p>Проект позиционируется как кейс кастомной automation-услуги на Ecomdev, а не как открытый self‑serve продукт. Публично доступны: описание воронки, mock‑скриншоты интерфейса, demo‑стенд. Webhook, токены и реальная касса не индексируются.</p>
+
+        <h2>SEO‑кластеры</h2>
+        <p>Страница оптимизирована под запросы: <em>Telegram bot для онлайн‑школы</em>, <em>бот для приёма оплаты</em>, <em>бот для выдачи цифрового продукта</em>.</p>
+
+        <p><a class="btn" href="/">На главную кейса</a> <a class="btn btn-secondary" href="/demo.html">Открыть demo</a></p>
     </article>
 </main>
 <footer>
-    <p>© 2026 PayTutor</p>
+    <p>© 2026 Ecomdev · PayTutor</p>
 </footer>
 </body>
 </html>

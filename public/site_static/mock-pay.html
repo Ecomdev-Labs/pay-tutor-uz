@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Mock оплата — PayTutor Demo</title>
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="description" content="Тестовый симулятор оплаты PayTutor. Не использует реальные карты и секреты.">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="mock-pay-page">
+<header class="mock-header">
+    <span class="mock-badge-page">ТЕСТОВЫЙ РЕЖИМ · NOINDEX</span>
+    <h1>Симулятор FreedomPay</h1>
+</header>
+<main class="mock-main" id="app">
+    <!-- Контент заполняется JS -->
+</main>
+<footer>
+    <p>© 2026 PayTutor Demo — без реальных платежей и webhook</p>
+</footer>
+<script>
+(function () {
+    var params = new URLSearchParams(window.location.search);
+    var orderId = params.get('pg_order_id') || 'demo_order';
+    var amount = params.get('pg_amount') || '100000';
+    var description = params.get('pg_description') || 'Demo';
+    var formatted = Number(amount).toLocaleString('ru-RU');
+
+    function renderForm() {
+        document.getElementById('app').innerHTML =
+            '<section class="mock-card">' +
+            '<h2>Страница оплаты (mock)</h2>' +
+            '<p><strong>Заказ:</strong> ' + esc(orderId) + '</p>' +
+            '<p><strong>Назначение:</strong> ' + esc(description) + '</p>' +
+            '<p class="mock-amount">К оплате: <strong>' + esc(formatted) + ' UZS</strong></p>' +
+            '<p class="mock-disclaimer">Демо‑стенд: реальные карты не используются. Webhook и секреты не задействованы.</p>' +
+            '<button type="button" class="btn mock-btn-pay" id="btnPay">Оплатить (имитация успеха)</button>' +
+            '<button type="button" class="btn mock-btn-cancel" id="btnCancel">Отменить (имитация ошибки)</button>' +
+            '</section>';
+        document.getElementById('btnPay').onclick = function () { renderResult(true); };
+        document.getElementById('btnCancel').onclick = function () { renderResult(false); };
+    }
+
+    function renderResult(success) {
+        document.getElementById('app').innerHTML =
+            '<section class="mock-card ' + (success ? 'mock-success' : 'mock-error') + '">' +
+            (success
+                ? '<h2>✅ Оплата сымитирована</h2><p>В production провайдер отправил бы callback на защищённый webhook. Бот выдал бы клиенту доступ или номер заказа.</p>'
+                : '<h2>❌ Оплата отклонена</h2><p>Клиент получил бы сообщение об ошибке или инструкцию повторить попытку.</p>') +
+            '<p class="mock-meta"><strong>Заказ:</strong> ' + esc(orderId) + '<br><strong>Сумма:</strong> ' + esc(formatted) + ' UZS</p>' +
+            '<a class="btn btn-secondary" href="/demo.html">Вернуться к демо</a> ' +
+            '<a class="btn btn-outline-light" href="/">На главную</a>' +
+            '</section>';
+    }
+
+    function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    renderForm();
+})();
+</script>
+</body>
+</html>
