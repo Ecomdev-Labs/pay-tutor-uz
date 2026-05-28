@@ -10,10 +10,11 @@ declare(strict_types=1);
 // Подключение зависимостей (composer autoload или fallback) — mock не использует классы, но подключаем для консистенции
 require_once __DIR__ . '/../src/bootstrap.php';
 
-// Определяем базовый URL для отправки вебхука об успешной оплате
-$host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'] ?? 'localhost';
-// Принудительно используем https, так как ngrok отдает наружу https
-$webhookUrl = "https://$host/payment_webhook.php";
+use App\Config;
+
+Config::load();
+
+$webhookUrl = Config::publicBaseUrl() . '/payment_webhook.php';
 
 // Запретить индексирование тестовой страницы
 header('X-Robots-Tag: noindex, nofollow');

@@ -1,0 +1,10 @@
+.env
+/vendor/
+/data/*.sqlite
+/data/*.sqlite-journal
+/public/bot_debug.log
+/public/bot_error.log
+/src/bot_debug.log
+/server.log
+/cloudflare/*.json
+!cloudflare/tunnel.example.yml

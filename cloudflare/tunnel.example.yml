@@ -1,0 +1,20 @@
+# Пример конфигурации Cloudflare Tunnel для PayTutor demo backend
+# Credentials НЕ коммитить — скачайте JSON из Cloudflare Dashboard
+#
+# Установка:
+#   cloudflared tunnel create pay-tutor-demo
+#   cloudflared tunnel route dns pay-tutor-demo demo-api.pay-tutor.ecomdev.uz
+#   cloudflared tunnel run --config cloudflare/tunnel.yml pay-tutor-demo
+#
+# Или используйте мастер в Zero Trust Dashboard (рекомендуется)
+
+tunnel: YOUR_TUNNEL_UUID
+credentials-file: C:\Users\YOU\.cloudflared\YOUR_TUNNEL_UUID.json
+
+ingress:
+  # PHP backend на OSPanel (порт 80, vhost с корнем public/)
+  - hostname: demo-api.pay-tutor.ecomdev.uz
+    service: http://127.0.0.1:80
+    originRequest:
+      httpHostHeader: pay-tutor-uz.test
+  - service: http_status:404

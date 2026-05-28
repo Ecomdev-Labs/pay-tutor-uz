@@ -41,6 +41,7 @@
         <a href="#problem">Задача</a>
         <a href="#funnel">Воронка</a>
         <a href="#screenshots">Интерфейс</a>
+        <a href="#try-bot">Demo-бот</a>
         <a href="/demo.html">Демо</a>
         <a href="#cta" class="nav-cta">Заказать</a>
     </nav>
@@ -198,6 +199,22 @@
             <li><strong>SQLite + PDO</strong> — пользователи, состояния диалога, заказы; поддержка MySQL через <code>DATABASE_DSN</code>.</li>
             <li><strong>Mock‑стенд</strong> — локальный симулятор оплаты для демо без реальных карт и секретов.</li>
         </ul>
+    </section>
+
+    <section id="try-bot" class="try-bot-block">
+        <span class="badge">Live Demo</span>
+        <h2>Попробовать demo Telegram‑бота</h2>
+        <p class="section-lead">Полный цикл на demo-стенде: меню → выбор тарифа → mock‑оплата → выдача доступа или номера заказа. Без реальных карт.</p>
+        <div class="try-bot-actions">
+            <a class="btn btn-lg btn-secondary" href="https://t.me/PayTutorDemoBot" target="_blank" rel="noopener">Открыть @PayTutorDemoBot</a>
+        </div>
+        <ul class="try-bot-steps">
+            <li>Нажмите <strong>/start</strong> в боте</li>
+            <li>Выберите уроки или доступ в канал</li>
+            <li>Оплатите на mock‑странице (тест)</li>
+            <li>Команды: <code>/demo</code> — инструкция, <code>/reset</code> — начать заново</li>
+        </ul>
+        <p class="try-bot-note">Demo работает, пока включён ноутбук с OSPanel и Cloudflare Tunnel. Подробнее: <a href="https://github.com/Ecomdev-Labs/pay-tutor-uz/blob/main/docs/DEMO_LAPTOP_SETUP.md">инструкция для администратора</a>.</p>
     </section>
 
     <section id="demo">

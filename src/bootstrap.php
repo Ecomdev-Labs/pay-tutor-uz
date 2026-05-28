@@ -5,7 +5,9 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once __DIR__ . '/../vendor/autoload.php';
 } else {
     require_once __DIR__ . '/helpers.php';
+    require_once __DIR__ . '/config.php';
     require_once __DIR__ . '/TelegramBot.php';
     require_once __DIR__ . '/FreedomPay.php';
     require_once __DIR__ . '/database.php';
+    require_once __DIR__ . '/BotUpdateHandler.php';
 }
