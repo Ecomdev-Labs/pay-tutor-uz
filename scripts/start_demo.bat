@@ -39,7 +39,8 @@ echo   2. cloudflared tunnel active (demo-api.pay-tutor.ecomdev.uz)
 echo   3. Demo bot created in @BotFather
 echo   4. Bot is admin in test channel (for channel access demo)
 echo.
-echo   Client link: https://t.me/YOUR_DEMO_BOT_USERNAME
+echo   Mock URL:  https://demo-api.pay-tutor.ecomdev.uz/public/mock_freedompay.php
+echo   Webhook:   https://demo-api.pay-tutor.ecomdev.uz/public/index.php
 echo   Case site:   https://pay-tutor.ecomdev.uz
 echo.
 echo   Fallback polling (no tunnel): php scripts\poll_bot.php

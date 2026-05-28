@@ -15,6 +15,9 @@ use App\Config;
 Config::load();
 
 $webhookUrl = Config::publicBaseUrl() . '/payment_webhook.php';
+$botUsername = ltrim(Config::get('BOT_USERNAME', 'PayTutorDemoBot') ?? 'PayTutorDemoBot', '@');
+$botTelegramUrl = 'https://t.me/' . $botUsername;
+$isDemo = Config::getBool('DEMO_MODE', false);
 
 // Запретить индексирование тестовой страницы
 header('X-Robots-Tag: noindex, nofollow');
@@ -66,41 +69,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         curl_close($ch);
     }
 
+    $paymentOk = ($action === 'pay' && $httpCode >= 200 && $httpCode < 300);
+
     ?>
     <!DOCTYPE html>
     <html lang="ru">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Симулятор FreedomPay - Результат</title>
+        <title><?= $paymentOk ? 'Оплата успешна' : 'Оплата не выполнена' ?> — PayTutor</title>
+        <?php if ($paymentOk): ?>
+        <meta http-equiv="refresh" content="4;url=<?= htmlspecialchars($botTelegramUrl) ?>">
+        <?php endif; ?>
         <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding-top: 50px; }
-            .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; width: 100%; text-align: center; }
-            .success { color: #28a745; }
-            .error { color: #dc3545; }
-            .btn { background: #0088cc; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 20px;}
-            pre { background: #333; color: #fff; padding: 15px; border-radius: 5px; text-align: left; overflow-x: auto; font-size: 13px;}
+            * { box-sizing: border-box; }
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(160deg, #eef2ff 0%, #f0f9ff 100%); min-height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; padding: 20px; }
+            .card { background: white; padding: 36px 32px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,136,204,0.12); max-width: 420px; width: 100%; text-align: center; }
+            .icon { font-size: 56px; line-height: 1; margin-bottom: 12px; }
+            h1 { margin: 0 0 12px; font-size: 1.5rem; color: #1e293b; }
+            .success h1 { color: #15803d; }
+            .error h1 { color: #dc2626; }
+            p { color: #475569; line-height: 1.6; margin: 0 0 16px; }
+            .order { background: #f8fafc; border-radius: 8px; padding: 12px 16px; margin: 20px 0; font-size: 0.95rem; color: #334155; }
+            .btn { background: linear-gradient(135deg, #0088cc, #006699); color: white; border: none; padding: 14px 28px; font-size: 17px; font-weight: 600; border-radius: 10px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 8px; box-shadow: 0 4px 14px rgba(0,136,204,0.35); }
+            .btn:hover { opacity: 0.95; }
+            .hint { font-size: 0.85rem; color: #64748b; margin-top: 16px; }
+            details { margin-top: 24px; text-align: left; font-size: 0.8rem; color: #64748b; }
+            details summary { cursor: pointer; color: #94a3b8; }
+            pre { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 11px; margin-top: 8px; }
         </style>
     </head>
     <body>
-        <div class="card">
-            <?php if ($action === 'pay'): ?>
-                <h2 class="success">✅ Оплата успешно сымитирована!</h2>
-                <p>Платежная система якобы списала деньги с карты и отправила скрытый запрос на ваш сервер.</p>
+        <div class="card <?= $paymentOk ? 'success' : 'error' ?>">
+            <?php if ($paymentOk): ?>
+                <div class="icon">✅</div>
+                <h1>Оплата прошла успешно</h1>
+                <p>Спасибо! Подтверждение и дальнейшие инструкции уже отправлены вам в Telegram.</p>
+                <div class="order">
+                    Заказ: <strong><?= htmlspecialchars($orderId) ?></strong><br>
+                    Сумма: <strong><?= htmlspecialchars(number_format((float) $amount, 0, '.', ' ')) ?> UZS</strong>
+                </div>
+                <a href="<?= htmlspecialchars($botTelegramUrl) ?>" class="btn">Открыть чат с ботом</a>
+                <p class="hint">Сейчас откроется Telegram (@<?= htmlspecialchars($botUsername) ?>) — приложение или веб-версия.</p>
             <?php else: ?>
-                <h2 class="error">❌ Оплата отклонена</h2>
-                <p>Отправлен статус ошибки.</p>
+                <div class="icon">❌</div>
+                <h1>Оплата не выполнена</h1>
+                <p>Платёж отменён или не прошёл. Вы можете вернуться в бот и попробовать снова.</p>
+                <a href="<?= htmlspecialchars($botTelegramUrl) ?>" class="btn">Вернуться в бот</a>
             <?php endif; ?>
 
-            <div style="text-align: left; margin-top: 20px;">
-                <p><strong>Webhook отправлен на:</strong><br><small><?= htmlspecialchars($webhookUrl) ?></small></p>
-                <p><strong>Ответ от вашего сервера (HTTP: <?= $httpCode ?>):</strong></p>
-                <pre><?= htmlspecialchars($webhookResponse ?: 'Пустой ответ или ошибка cURL: ' . $curlError) ?></pre>
-            </div>
-
-            <p>Теперь вы можете закрыть это окно и вернуться в Telegram-бота.</p>
-            <a href="https://t.me/" class="btn">Вернуться в Telegram</a>
+            <?php if ($isDemo): ?>
+            <details>
+                <summary>Технические детали (demo)</summary>
+                <p>Webhook: <code><?= htmlspecialchars($webhookUrl) ?></code></p>
+                <p>HTTP: <?= (int) $httpCode ?></p>
+                <pre><?= htmlspecialchars($webhookResponse ?: ($curlError ?: '—')) ?></pre>
+            </details>
+            <?php endif; ?>
         </div>
+        <?php if ($paymentOk): ?>
+        <script>
+            setTimeout(function () {
+                window.location.href = <?= json_encode($botTelegramUrl, JSON_UNESCAPED_UNICODE) ?>;
+            }, 3500);
+        </script>
+        <?php endif; ?>
     </body>
     </html>
     <?php
@@ -152,8 +185,8 @@ $formattedAmount = number_format((float)$amount, 0, '.', ' ');
         <form method="POST">
             <input type="hidden" name="pg_order_id" value="<?= htmlspecialchars($orderId) ?>">
             <input type="hidden" name="pg_amount" value="<?= htmlspecialchars($amount) ?>">
-            <button type="submit" name="action" value="pay" class="btn-pay">Оплатить (имитация успеха)</button>
-            <button type="submit" name="action" value="cancel" class="btn-cancel">Отменить (имитация ошибки)</button>
+            <button type="submit" name="action" value="pay" class="btn-pay">Оплатить</button>
+            <button type="submit" name="action" value="cancel" class="btn-cancel">Отмена</button>
         </form>
     </div>
 </body>

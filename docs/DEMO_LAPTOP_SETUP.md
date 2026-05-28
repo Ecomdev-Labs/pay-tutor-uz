@@ -97,33 +97,44 @@ BOT_TOKEN=...
 BOT_USERNAME=PayTutorDemoBot
 ADMIN_CHAT_ID=ваш_telegram_id
 CHANNEL_ID=-100...
-PUBLIC_BASE_URL=https://demo-api.pay-tutor.ecomdev.uz
+PUBLIC_BASE_URL=https://demo-api.pay-tutor.ecomdev.uz/public
 DEMO_MODE=1
 ```
 
+> **Вариант B (текущий):** корень OSPanel = папка репозитория, PHP в `public/`.  
+> `PUBLIC_BASE_URL` должен заканчиваться на `/public`.  
+> **Вариант A:** корень OSPanel = `public/` → URL без `/public`.
+
 ## 4. OSPanel
 
-1. Домен проекта → корень `public/`
-2. PHP 7.4+ с расширениями PDO, curl
-3. Включите автозапуск OSPanel при старте Windows
+1. Проект в списке: **pay-tutor-uz** → локальный URL: `http://pay-tutor-uz/`
+2. **Вариант B:** корень домена = `D:\OSPanel\domains\pay-tutor-uz` (как сейчас)
+3. PHP 7.4+ с расширениями PDO, curl
+4. Включите автозапуск OSPanel при старте Windows
 
-Проверка локально: `http://pay-tutor-uz.test/mock_freedompay.php` (ваш vhost)
+Проверка локально:
+
+```text
+http://pay-tutor-uz/public/mock_freedompay.php
+http://pay-tutor-uz/public/index.php   → «No webhook data received.» (норма для GET)
+```
 
 ## 5. Cloudflare Tunnel
 
 ### Установка cloudflared
 
-Скачайте с [Cloudflare Downloads](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) и добавьте в PATH.
+```powershell
+winget install --id Cloudflare.cloudflared
+```
 
 ### Создание tunnel (Dashboard)
 
 1. [Cloudflare Zero Trust](https://one.dash.cloudflare.com/) → **Networks** → **Tunnels**
-2. **Create a tunnel** → Cloudflared
-3. Скопируйте команду установки или credentials
-4. **Public Hostname**:
-   - Subdomain: `demo-api`
-   - Domain: `pay-tutor.ecomdev.uz`
-   - Service: `http://127.0.0.1:80` (или ваш OSPanel vhost)
+2. Tunnel **pay-tutor-demo** (ID: `c4f56d88-f3d7-42cb-998b-63af46cfcda0`)
+3. **Published application route**:
+   - Hostname: `demo-api.pay-tutor.ecomdev.uz`
+   - Service: **`http://127.0.0.1:80`** (не `https`!)
+4. **HTTP Host header:** `pay-tutor-uz`
 
 Пример конфига: [`cloudflare/tunnel.example.yml`](../cloudflare/tunnel.example.yml)
 
@@ -140,10 +151,10 @@ cloudflared service install
 ### Проверка tunnel
 
 ```bash
-curl -I https://demo-api.pay-tutor.ecomdev.uz/mock_freedompay.php
+curl -I https://demo-api.pay-tutor.ecomdev.uz/public/mock_freedompay.php
 ```
 
-Должен вернуть `200` или редирект на mock-страницу.
+Должен вернуть **HTTP 200**.
 
 ## 6. Webhook Telegram
 
@@ -151,9 +162,7 @@ curl -I https://demo-api.pay-tutor.ecomdev.uz/mock_freedompay.php
 php scripts/set_webhook.php
 ```
 
-Или двойной клик: `scripts/start_demo.bat`
-
-Webhook URL: `{PUBLIC_BASE_URL}/index.php`
+Webhook URL: `https://demo-api.pay-tutor.ecomdev.uz/public/index.php`
 
 ## 7. Полный тест
 

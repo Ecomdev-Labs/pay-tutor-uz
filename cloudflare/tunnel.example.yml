@@ -16,5 +16,5 @@ ingress:
   - hostname: demo-api.pay-tutor.ecomdev.uz
     service: http://127.0.0.1:80
     originRequest:
-      httpHostHeader: pay-tutor-uz.test
+      httpHostHeader: pay-tutor-uz
   - service: http_status:404

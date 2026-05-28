@@ -26,6 +26,7 @@
     var amount = params.get('pg_amount') || '100000';
     var description = params.get('pg_description') || 'Demo';
     var formatted = Number(amount).toLocaleString('ru-RU');
+    var botUrl = 'https://t.me/PayTutorDemoBot';
 
     function renderForm() {
         document.getElementById('app').innerHTML =
@@ -43,14 +44,16 @@
     }
 
     function renderResult(success) {
+        if (success) {
+            setTimeout(function () { window.location.href = botUrl; }, 3500);
+        }
         document.getElementById('app').innerHTML =
             '<section class="mock-card ' + (success ? 'mock-success' : 'mock-error') + '">' +
             (success
-                ? '<h2>✅ Оплата сымитирована</h2><p>В production провайдер отправил бы callback на защищённый webhook. Бот выдал бы клиенту доступ или номер заказа.</p>'
-                : '<h2>❌ Оплата отклонена</h2><p>Клиент получил бы сообщение об ошибке или инструкцию повторить попытку.</p>') +
+                ? '<h2>✅ Оплата прошла успешно</h2><p>Демо: в реальном сценарии бот отправил бы подтверждение в Telegram.</p>'
+                : '<h2>❌ Оплата не выполнена</h2><p>Попробуйте снова в боте.</p>') +
             '<p class="mock-meta"><strong>Заказ:</strong> ' + esc(orderId) + '<br><strong>Сумма:</strong> ' + esc(formatted) + ' UZS</p>' +
-            '<a class="btn btn-secondary" href="/demo.html">Вернуться к демо</a> ' +
-            '<a class="btn btn-outline-light" href="/">На главную</a>' +
+            '<a class="btn btn-secondary" href="' + botUrl + '">Открыть чат с ботом</a>' +
             '</section>';
     }
 
