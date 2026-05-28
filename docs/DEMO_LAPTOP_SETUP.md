@@ -198,6 +198,84 @@ php scripts/poll_bot.php
 - Mock merchant secret только для тестов
 - Webhook/mock помечены `noindex`
 
+## 11. Мониторинг без редактора кода
+
+**Пошаговая инструкция с чеклистом:** [`docs/MONITORING.md`](MONITORING.md)
+
+Кратко:
+
+### Быстрая проверка одним кликом
+
+Дважды щёлкните **`scripts\status.bat`** — в консоли будет список: локальный PHP, OSPanel, cloudflared, tunnel, Telegram webhook.
+
+### Страница статуса в браузере
+
+Добавьте в закладки:
+
+```text
+http://pay-tutor-uz/public/status.php
+```
+
+Страница обновляется каждые 30 секунд: зелёный/красный баннер и карточки по каждому компоненту.
+
+Публично (через tunnel, можно проверить с телефона):
+
+```text
+https://demo-api.pay-tutor.ecomdev.uz/public/status.php
+https://demo-api.pay-tutor.ecomdev.uz/public/health.php
+```
+
+`health.php` — JSON для автоматических проверок (UptimeRobot, cron).
+
+### Фоновый монитор + Telegram
+
+Запустите **`scripts\monitor_demo.bat`** (или `monitor_demo.bat 120` — интервал 120 сек):
+
+- пишет результат в **`data/monitor.log`**
+- при **переходе** «работает → сломалось» или «сломалось → работает» шлёт сообщение на **`ADMIN_CHAT_ID`** в Telegram
+
+Окно можно свернуть; остановка — `Ctrl+C`.
+
+### Автозапуск монитора при входе в Windows
+
+1. **Win+R** → `taskschd.msc`
+2. **Создать задачу** → имя `PayTutor Demo Monitor`
+3. Триггер: **При входе в систему**
+4. Действие: **Запуск программы**
+   - Программа: `D:\OSPanel\domains\pay-tutor-uz\scripts\monitor_demo.bat`
+   - Рабочая папка: `D:\OSPanel\domains\pay-tutor-uz`
+5. Параметры: `60` (интервал в секундах), если нужен свой интервал — укажите в «Аргументы»
+
+### Внешний мониторинг tunnel (ноутбук выключен — не поможет локально)
+
+Бесплатный [UptimeRobot](https://uptimerobot.com) или аналог — HTTP(s) монитор на:
+
+```text
+https://demo-api.pay-tutor.ecomdev.uz/public/health.php
+```
+
+Ожидаемый ответ: HTTP **200** и JSON `"ok": true`.
+
+### Что проверяется
+
+| Компонент | Как |
+|-----------|-----|
+| PHP, .env, SQLite | `health.php` локально |
+| OSPanel (Apache) | HTTP на `LOCAL_HEALTH_URL` |
+| cloudflared | процесс `cloudflared.exe` в Windows |
+| Tunnel | HTTP на публичный `health.php` |
+| Telegram | `getWebhookInfo` — URL и ошибки webhook |
+
+### CLI (из терминала)
+
+```bash
+php scripts/check_status.php
+php scripts/check_status.php --json
+php scripts/check_status.php --notify --log data/monitor.log
+```
+
+Код выхода: **0** — всё OK, **1** — есть проблемы.
+
 ## Клиентам
 
 Дайте ссылку: `https://t.me/BOT_USERNAME` (из `.env` → `BOT_USERNAME`)

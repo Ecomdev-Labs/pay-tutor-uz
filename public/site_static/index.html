@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script>(function(){try{var s=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches;s==='dark'||s!=='light'&&d?document.documentElement.dataset.theme='dark':document.documentElement.dataset.theme='light'}catch(e){}})();</script>
     <title>Telegram-бот для онлайн-школы — приём оплаты и выдача доступа | PayTutor</title>
     <meta name="description" content="Кейс PayTutor от Ecomdev: Telegram-бот для онлайн-школы — воронка продаж, приём оплаты через FreedomPay, автоматическая выдача уроков и доступа в закрытый канал.">
     <meta name="keywords" content="Telegram bot для онлайн-школы, бот для приема оплаты, бот для выдачи цифрового продукта, автоматизация продаж уроков, FreedomPay, PayTutor">
@@ -41,9 +42,14 @@
         <a href="#problem">Задача</a>
         <a href="#funnel">Воронка</a>
         <a href="#screenshots">Интерфейс</a>
+        <a href="/bot.html">Инструкция</a>
         <a href="#try-bot">Demo-бот</a>
         <a href="/demo.html">Демо</a>
         <a href="#cta" class="nav-cta">Заказать</a>
+        <button type="button" class="theme-toggle" aria-label="Переключить тему">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
     </nav>
 </header>
 
@@ -207,6 +213,7 @@
         <p class="section-lead">Полный цикл на demo-стенде: меню → выбор тарифа → mock‑оплата → выдача доступа или номера заказа. Без реальных карт.</p>
         <div class="try-bot-actions">
             <a class="btn btn-lg btn-secondary" href="https://t.me/PayTutorDemoBot" target="_blank" rel="noopener">Открыть @PayTutorDemoBot</a>
+            <a class="btn btn-lg" href="/bot.html">Полная инструкция</a>
         </div>
         <ul class="try-bot-steps">
             <li>Нажмите <strong>/start</strong> в боте</li>
@@ -238,8 +245,9 @@
 </main>
 
 <footer>
-    <p>© 2026 Ecomdev · Кейс PayTutor · <a href="/post.html">Полная статья кейса</a></p>
+    <p>© 2026 Ecomdev · Кейс PayTutor · <a href="/bot.html">Инструкция бота</a> · <a href="/post.html">Статья</a></p>
     <p class="footer-meta">Технические endpoint (webhook, mock PHP) не индексируются.</p>
 </footer>
+<script src="/theme.js" defer></script>
 </body>
 </html>

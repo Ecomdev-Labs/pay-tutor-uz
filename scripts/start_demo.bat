@@ -44,7 +44,8 @@ echo   Webhook:   https://demo-api.pay-tutor.ecomdev.uz/public/index.php
 echo   Case site:   https://pay-tutor.ecomdev.uz
 echo.
 echo   Fallback polling (no tunnel): php scripts\poll_bot.php
-echo   (requires deleteWebhook first)
+echo   Status check: scripts\status.bat  OR  http://pay-tutor-uz/public/status.php
+echo   Background monitor: scripts\monitor_demo.bat
 echo.
 
 :end

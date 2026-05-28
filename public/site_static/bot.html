@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script>(function(){try{var s=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches;s==='dark'||s!=='light'&&d?document.documentElement.dataset.theme='dark':document.documentElement.dataset.theme='light'}catch(e){}})();</script>
+    <title>Презентация и инструкция — PayTutor Demo Bot</title>
+    <meta name="description" content="Как протестировать demo Telegram-бот PayTutor: покупка уроков, доступ в канал, mock-оплата. Пошаговая инструкция для клиентов.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://pay-tutor.ecomdev.uz/bot.html">
+    <link rel="stylesheet" href="/styles.css">
+    <meta property="og:title" content="PayTutor Demo Bot — инструкция">
+    <meta property="og:description" content="Пошаговое руководство по тестированию Telegram-бота для онлайн-школы.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pay-tutor.ecomdev.uz/bot.html">
+</head>
+<body>
+<header>
+    <p class="header-badge">Demo · Инструкция</p>
+    <h1>PayTutor Demo Bot — презентация и руководство</h1>
+    <p class="header-lead">Попробуйте Telegram-бота для онлайн-школы: воронка продаж, mock-оплата и автоматическая выдача продукта — без реальных карт.</p>
+    <nav>
+        <a href="/">Главная</a>
+        <a href="#about">О боте</a>
+        <a href="#start">Быстрый старт</a>
+        <a href="#lessons">Уроки</a>
+        <a href="#channel">Канал</a>
+        <a href="#commands">Команды</a>
+        <a href="https://t.me/PayTutorDemoBot" class="nav-cta" target="_blank" rel="noopener">Открыть бота</a>
+        <button type="button" class="theme-toggle" aria-label="Переключить тему">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+    </nav>
+</header>
+
+<main>
+    <section class="hero try-bot-block">
+        <span class="badge">Live Demo</span>
+        <h2 id="about">Что умеет бот</h2>
+        <p>PayTutor Demo — демонстрация automation-решения для онлайн-школ и репетиторов. Бот проводит клиента по воронке в Telegram, считает стоимость, отправляет на страницу оплаты и после успешной mock-оплаты выдаёт результат:</p>
+        <ul>
+            <li><strong>Уроки</strong> — номер заказа и инструкция связаться с преподавателем</li>
+            <li><strong>Закрытый канал</strong> — персональная одноразовая invite-ссылка</li>
+            <li><strong>Администратор</strong> — уведомление о каждой «продаже»</li>
+        </ul>
+        <div class="try-bot-actions">
+            <a class="btn btn-lg btn-secondary" href="https://t.me/PayTutorDemoBot" target="_blank" rel="noopener">Открыть @PayTutorDemoBot</a>
+            <a class="btn btn-lg" href="https://t.me/PayTutorDemoBot?start=demo" target="_blank" rel="noopener">Запустить с /start</a>
+        </div>
+        <p class="try-bot-note">Demo-стенд работает, пока включён сервер разработчика. Оплата — тестовая (mock), деньги не списываются.</p>
+    </section>
+
+    <section id="start">
+        <h2>Быстрый старт за 2 минуты</h2>
+        <ol class="funnel-steps">
+            <li>
+                <span class="step-num">1</span>
+                <div>
+                    <strong>Откройте бота</strong>
+                    <p>Перейдите по ссылке <a href="https://t.me/PayTutorDemoBot" target="_blank" rel="noopener">t.me/PayTutorDemoBot</a> — откроется приложение Telegram или веб-версия.</p>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">2</span>
+                <div>
+                    <strong>Нажмите Start или отправьте /start</strong>
+                    <p>Появится главное меню: уроки, канал, юридическая информация, поддержка.</p>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">3</span>
+                <div>
+                    <strong>Выберите сценарий</strong>
+                    <p>«Купить уроки» или «Доступ в закрытый канал» — см. подробные шаги ниже.</p>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">4</span>
+                <div>
+                    <strong>Оплатите на mock-странице</strong>
+                    <p>Нажмите «Оплатить» → подтвердите → вас вернёт в чат с ботом с результатом.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section id="lessons">
+        <h2>Инструкция: покупка уроков</h2>
+        <ol class="funnel-steps compact">
+            <li><span class="step-num">1</span><div><strong>Купить уроки</strong><p>В главном меню выберите «📚 Купить уроки».</p></div></li>
+            <li><span class="step-num">2</span><div><strong>Формат</strong><p>Индивидуальные, парные или групповые — см. тарифы ниже.</p></div></li>
+            <li><span class="step-num">3</span><div><strong>Количество</strong><p>Введите число уроков цифрой, например <code>5</code>.</p></div></li>
+            <li><span class="step-num">4</span><div><strong>Оплатить 💳</strong><p>Откроется тестовая страница оплаты. Нажмите «Оплатить».</p></div></li>
+            <li><span class="step-num">5</span><div><strong>Результат</strong><p>В Telegram придёт номер заказа и контакт преподавателя.</p></div></li>
+        </ol>
+
+        <h3>Тарифы (demo)</h3>
+        <table class="guide-table">
+            <thead>
+                <tr><th>Формат</th><th>Цена за 1 урок</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Индивидуальные</td><td>200 000 UZS</td></tr>
+                <tr><td>Парные</td><td>150 000 UZS</td></tr>
+                <tr><td>Групповые</td><td>100 000 UZS</td></tr>
+            </tbody>
+        </table>
+        <p class="section-lead">Пример: 5 групповых уроков = 5 × 100 000 = <strong>500 000 UZS</strong>.</p>
+    </section>
+
+    <section id="channel">
+        <h2>Инструкция: доступ в закрытый канал</h2>
+        <ol class="funnel-steps compact">
+            <li><span class="step-num">1</span><div><strong>Доступ в закрытый канал</strong><p>Выберите пункт в главном меню.</p></div></li>
+            <li><span class="step-num">2</span><div><strong>Оплатить 💳</strong><p>Фиксированная цена <strong>300 000 UZS</strong>, mock-страница оплаты.</p></div></li>
+            <li><span class="step-num">3</span><div><strong>Invite-ссылка</strong><p>После оплаты бот пришлёт одноразовую ссылку в тестовый канал «Тест Уроки».</p></div></li>
+        </ol>
+    </section>
+
+    <section id="commands">
+        <h2>Команды бота</h2>
+        <table class="guide-table">
+            <thead>
+                <tr><th>Команда</th><th>Действие</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>/start</code></td><td>Главное меню, сброс диалога</td></tr>
+                <tr><td><code>/demo</code></td><td>Краткая инструкция по тестированию</td></tr>
+                <tr><td><code>/reset</code></td><td>Сброс состояния и начало заново</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="notice">
+        <h3>Важно для demo</h3>
+        <ul>
+            <li>Используется <strong>mock-оплата</strong> — реальные карты не нужны</li>
+            <li>После оплаты страница автоматически вернёт вас в чат с ботом</li>
+            <li>Если бот не отвечает — demo-сервер может быть временно выключен</li>
+            <li>Для повторного теста отправьте <code>/reset</code></li>
+        </ul>
+    </section>
+
+    <section class="cta-block">
+        <h2>Хотите такого бота для своего проекта?</h2>
+        <p>Ecomdev разрабатывает Telegram-ботов с оплатой, выдачей доступа и интеграцией FreedomPay.</p>
+        <p>
+            <a class="btn btn-lg" href="https://ecomdev.uz" target="_blank" rel="noopener">Заказать на Ecomdev</a>
+            <a class="btn btn-outline" href="/">Кейс PayTutor</a>
+        </p>
+    </section>
+</main>
+
+<footer>
+    <p>© 2026 Ecomdev · <a href="/">Кейс</a> · <a href="/post.html">Статья</a> · <a href="https://t.me/PayTutorDemoBot">@PayTutorDemoBot</a></p>
+</footer>
+<script src="/theme.js" defer></script>
+</body>
+</html>

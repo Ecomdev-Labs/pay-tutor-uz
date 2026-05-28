@@ -10,4 +10,5 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once __DIR__ . '/FreedomPay.php';
     require_once __DIR__ . '/database.php';
     require_once __DIR__ . '/BotUpdateHandler.php';
+    require_once __DIR__ . '/DemoHealthCheck.php';
 }
