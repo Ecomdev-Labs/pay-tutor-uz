@@ -6,6 +6,14 @@ namespace App;
 
 final class Config
 {
+    /** Боевой домен кейс-сайта (Cloudflare Workers). См. docs/DOMAIN.md */
+    public const PRODUCTION_SITE_HOST = 'pay-tutor.ecomdev.uz';
+
+    public const PRODUCTION_SITE_ORIGIN = 'https://pay-tutor.ecomdev.uz';
+
+    /** Demo API: бот, webhook, mock-оплата (OSPanel + tunnel) */
+    public const DEMO_API_HOST = 'demo-api.pay-tutor.ecomdev.uz';
+
     /** @var array<string, string>|null */
     private static ?array $values = null;
 
@@ -102,6 +110,20 @@ final class Config
         }
 
         return 'http://localhost';
+    }
+
+    public static function siteUrl(): string
+    {
+        $url = self::get('SITE_URL', self::PRODUCTION_SITE_ORIGIN);
+
+        return rtrim($url ?? self::PRODUCTION_SITE_ORIGIN, '/');
+    }
+
+    public static function siteHost(): string
+    {
+        $parsed = parse_url(self::siteUrl());
+
+        return $parsed['host'] ?? self::PRODUCTION_SITE_HOST;
     }
 
     public static function mockPaymentUrl(): string

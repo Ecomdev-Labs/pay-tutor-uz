@@ -19,7 +19,7 @@ class BotUpdateHandler
         \PDO $pdo,
         FreedomPay $freedomPay,
         bool $demoMode = false,
-        string $siteUrl = 'https://pay-tutor.ecomdev.uz',
+        string $siteUrl = Config::PRODUCTION_SITE_ORIGIN,
         string $supportUsername = 'SupportUsername',
         string $teacherUsername = 'TeacherUsername'
     ) {

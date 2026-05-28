@@ -1,0 +1,7 @@
+{
+  "projectName": "PayTutor",
+  "productionHost": "pay-tutor.ecomdev.uz",
+  "productionOrigin": "https://pay-tutor.ecomdev.uz",
+  "demoApiHost": "demo-api.pay-tutor.ecomdev.uz",
+  "demoApiOrigin": "https://demo-api.pay-tutor.ecomdev.uz"
+}

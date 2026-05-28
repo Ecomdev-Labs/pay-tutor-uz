@@ -22,7 +22,8 @@
 - Регулярный бэкап БД и проверка целостности.
 
 **Production domain**
-- Боевый домен проекта: pay-tutor.ecomdev.uz — зафиксировать в техническом задании (TZ) как основную публичную зону для приложения и вебхуков.
+- Боевой домен кейс-сайта: **https://pay-tutor.ecomdev.uz** — зафиксирован в [DOMAIN.md](DOMAIN.md), `Config::PRODUCTION_SITE_ORIGIN`, `public/site_static/site.json`, `SITE_URL` в `.env`.
+- Demo API (бот, webhook): **https://demo-api.pay-tutor.ecomdev.uz** — отдельный хост, не подменяет кейс-сайт.
 
 **Cloudflare / Workers**
 - Примечание: попытка деплоя на Cloudflare Workers в текущем аккаунте не прошла успешно — Worker URL отображается как "Inactive" и в панели замечено "Latest build failed" (см. скриншот). Не переключать трафик на этот хост до устранения проблемы.

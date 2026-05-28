@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PayTutor">
+  <defs>
+    <linearGradient id="pt-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0088cc"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#pt-bg)"/>
+  <path fill="#fff" d="M20 18h14.5c8.2 0 13.5 4.6 13.5 11.8 0 5.6-3.1 9.6-8.2 11.1L48 46H36.8l-7.9-12.2H28V46H20V18zm8 6.2v9.4h5.8c3.6 0 5.6-1.6 5.6-4.7 0-3-2-4.7-5.6-4.7H28z"/>
+  <path fill="#fff" fill-opacity=".92" d="M44 44l6 6 4.2-4.2-6-6z"/>
+  <circle cx="49" cy="41" r="3.5" fill="#fff" fill-opacity=".85"/>
+</svg>

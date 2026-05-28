@@ -85,6 +85,33 @@ body {
     min-height: 100vh;
 }
 
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    max-width: 900px;
+    margin: 0 auto 1rem;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+}
+
+.site-brand:hover {
+    color: #fff;
+    text-decoration: none;
+    opacity: 0.92;
+}
+
+.site-brand img {
+    display: block;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
 header {
     background: var(--header-bg);
     color: #fff;

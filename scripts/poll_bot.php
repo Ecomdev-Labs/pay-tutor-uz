@@ -40,7 +40,7 @@ $handler = new BotUpdateHandler(
     $pdo,
     $freedomPay,
     Config::getBool('DEMO_MODE', false),
-    Config::get('SITE_URL', 'https://pay-tutor.ecomdev.uz') ?? 'https://pay-tutor.ecomdev.uz',
+    Config::siteUrl(),
     Config::get('SUPPORT_USERNAME', 'SupportUsername') ?? 'SupportUsername',
     Config::get('TEACHER_USERNAME', 'TeacherUsername') ?? 'TeacherUsername'
 );
